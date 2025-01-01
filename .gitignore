@@ -171,3 +171,4 @@ cython_debug/
 .pypirc
 config/private_data.py
 src/config/private_data.py
+src/data/*
