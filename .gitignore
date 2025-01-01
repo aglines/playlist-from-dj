@@ -170,3 +170,4 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 config/private_data.py
+src/config/private_data.py
