@@ -3,6 +3,7 @@ import requests
 import json
 from datetime import datetime
 import os
+import time
 from config.private_data import API_SOURCE_URL_PLAYS
 
 # Some data limits based on simple research
@@ -10,11 +11,12 @@ from config.private_data import API_SOURCE_URL_PLAYS
 # earliest_date = '2001-04-09T08:00:00-07:00'
 # earliest_show_id = 6911
 
-
 class RequestData(beam.DoFn):
-    def __init__(self, chunk_size=5000):
+    def __init__(self, chunk_size=2000, delay=1):
         self.chunk_size = chunk_size
         self.data_chunk = []
+        self.delay = delay
+
 
     def process(self, element):
         url = API_SOURCE_URL_PLAYS
@@ -22,8 +24,8 @@ class RequestData(beam.DoFn):
             'host_ids': 26,
             'exclude_airbreaks': True,
             'exclude_non_songs': True,
-            'airdate_after': '2001-04-09T08:00:00-07:00',
-            'airdate_before': '2025-01-01T00:00:00-08:00',
+            'airdate_after': '2023-01-01T00:00:00-08:00',
+            'airdate_before': '2024-01-01T00:00:00-08:00',
             'ordering': 'airdate'
         }
         next_url = url
@@ -47,6 +49,9 @@ class RequestData(beam.DoFn):
             params = {}
             print(f'Next URL: {next_url}')
 
+            # Add delay between requests
+            time.sleep(self.delay)
+
         if self.data_chunk:
             yield self.data_chunk
             self.data_chunk = []
@@ -64,7 +69,7 @@ if __name__ == '__main__':
         (
             pipeline
             | 'Start' >> beam.Create([1])
-            | 'Get Data' >> beam.ParDo(RequestData(chunk_size=5000))
+            | 'Get Data' >> beam.ParDo(RequestData(chunk_size=2000, delay=1))
             | 'Write to JSON' >> beam.Map(writedata_tojson)
         )
 

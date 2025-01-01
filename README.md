@@ -4,7 +4,11 @@ creates playlists in Spotify, based on music data from a radio station dj
 # to do / planned structure
 
 ## Data retrieval
-- process larger chunks until dataset complete
+- add a delay between requests to not overtax the resource
+- write chunks at smaller intervals
+- process fewer timespans at a time
+
+- process until dataset complete
 
 ## Storage
 - write local JSON to a db for later analysis
