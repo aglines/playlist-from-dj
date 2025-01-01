@@ -22,7 +22,7 @@ class RequestData(beam.DoFn):
             'host_ids': 26,
             'exclude_airbreaks': True,
             'exclude_non_songs': True,
-            'airdate_after': '2024-01-01T00:00:00-08:00',
+            'airdate_after': '2001-04-09T08:00:00-07:00',
             'airdate_before': '2025-01-01T00:00:00-08:00',
             'ordering': 'airdate'
         }
