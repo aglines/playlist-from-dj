@@ -1,6 +1,12 @@
 import requests
 import json
-from config.private_data import API_SOURCE_URL_HOSTS, API_SOURCE_URL_TIMESLOTS
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+hosts = os.getenv('API_SOURCE_URL_HOSTS')
+timeslots = os.getenv('API_SOURCE_URL_TIMESLOTS')
+# from config.private_data import API_SOURCE_URL_HOSTS, API_SOURCE_URL_TIMESLOTS
 
 # Goal:  Find the specific DJ ID from the API data
 # This code will be only run once, so no need to make it a function
@@ -8,8 +14,7 @@ from config.private_data import API_SOURCE_URL_HOSTS, API_SOURCE_URL_TIMESLOTS
 
 # First, look at the list of hostIDs and names
     
-url = API_SOURCE_URL_HOSTS
-response = requests.get(url)
+response = requests.get(hosts)
 response=response.json()
 
 for i in response['results']:
@@ -20,8 +25,7 @@ for i in response['results']:
 # But we also know the show name and its timeslot
 # so maybe the timeslots API has the info we need
 
-url = API_SOURCE_URL_TIMESLOTS
-response = requests.get(url)
+response = requests.get(timeslots)
 response=response.json()
 
 for i in response['results']:

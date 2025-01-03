@@ -1,9 +1,17 @@
 import psycopg2
 from psycopg2 import sql
-
-from config.private_data import LOCAL_DATA_PATH, DBNAME, TABLENAME, USER, PASSWORD, HOST, PORT
+from dotenv import load_dotenv
+import os
 
 # For one show, get the artist and track from the db
+
+load_dotenv()
+db_params = {
+    'dbname': os.getenv('DBNAME'), 'user': os.getenv('DBUSER'),
+    'password': os.getenv('PASSWORD'), 'host': os.getenv('HOST'), 'port': os.getenv('PORT')
+}
+table_name = os.getenv('TABLENAME')
+
 
 def connect_to_db(dbname, user, password, host, port):
     try:
@@ -39,13 +47,6 @@ def main():
 
     # Pick one show at random
     curr_show = 37547
-
-    db_params = {
-        'dbname': DBNAME, 'user': USER,
-        'password': PASSWORD, 'host': HOST, 'port': PORT
-    }
-    local_data_path = LOCAL_DATA_PATH
-    table_name = TABLENAME
 
     conn = connect_to_db(**db_params)
 

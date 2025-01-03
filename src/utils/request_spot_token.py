@@ -2,8 +2,16 @@ import json
 import requests
 import base64
 import spotipy
-# Include client ID, client secret
-from private_data import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
+from dotenv import load_dotenv, set_key
+import os
+
+load_dotenv()
+
+CLIENT_ID = os.getenv("CLIENT_ID")
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+REDIRECT_URI = os.getenv("REDIRECT_URI")
+ENV_PATH = os.getenv("ENV_PATH")
+
 
 def req_token():
     """gets a spotify web API token"""
@@ -17,8 +25,10 @@ def req_token():
     if r.status_code not in range(200,299):
         raise Exception("could not authenticate client. Status code was : ", r.status_code)
     token = r.json()["access_token"]
-    print(f"access token : {token}")
+    set_key(ENV_PATH, "CURR_TOKEN", token)
+
     return token
 
 if __name__ == '__main__':
     req_token()
+
