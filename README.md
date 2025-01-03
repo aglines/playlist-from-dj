@@ -4,7 +4,6 @@ creates playlists in Spotify, based on music data from a radio station dj
 # to do / planned structure
 
 ## Create playlists from a subset of the data
-- use song title and artist to find the song on Spotify
 - write spotify track and artist data to db
 - For all the songs in one show, create one playlist
 
@@ -12,6 +11,7 @@ creates playlists in Spotify, based on music data from a radio station dj
 - start research questions, t.ex. most played band by this DJ? do they favor songs from any years, genres? live versions or studio recordings? etc
 
 # done
+- use song title and artist to find the song on Spotify
 - refactor to include .env file
 - select data subset for one value of show from db
 - write local JSON to a db for later analysis
