@@ -5,14 +5,6 @@ import os
 
 # For one show, get the artist and track from the db
 
-load_dotenv()
-db_params = {
-    'dbname': os.getenv('DBNAME'), 'user': os.getenv('DBUSER'),
-    'password': os.getenv('PASSWORD'), 'host': os.getenv('HOST'), 'port': os.getenv('PORT')
-}
-table_name = os.getenv('TABLENAME')
-
-
 def connect_to_db(dbname, user, password, host, port):
     try:
         conn = psycopg2.connect(
@@ -36,22 +28,26 @@ def get_artist_song(show, table_name, conn):
                 )
             )
             rows = cursor.fetchall()
-            print(rows)
-            return rows
     except psycopg2.Error as e:
         print(f"Error: Could not get data from the table. {e}")
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
+    return rows
 
-def main():
+def process_current_show(curr_show):
 
-    # Pick one show at random
-    curr_show = 37547
+    load_dotenv()
+    db_params = {
+        'dbname': os.getenv('DBNAME'), 'user': os.getenv('DBUSER'),
+        'password': os.getenv('PASSWORD'), 'host': os.getenv('HOST'), 'port': os.getenv('PORT')
+    }
+    table_name = os.getenv('TABLENAME')
 
     conn = connect_to_db(**db_params)
-
-    # Get the artist and track for the show
-    get_artist_song(curr_show, table_name, conn)
-
-if __name__ == '__main__':
-    main()
+    if conn:
+        try:
+            show_artist_song = get_artist_song(curr_show, table_name, conn)
+        finally:
+            conn.close()
+    return show_artist_song
+    
