@@ -1,8 +1,9 @@
 import requests
 import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
+from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 from dotenv import load_dotenv
 import os
+import time
 from getdata_show import process_current_show
 
 def search_artist_track_spotify(show_artist_song):
@@ -47,19 +48,42 @@ def get_artist_track_spotify(show_artist_song, curr_token):
             return None
         data = response.json()
         if not data['tracks']['items']:
-            print(f'Skipping: Artist "{artist.replace("%20", " ")}" and Track "{track.replace("%20", " ")}" not found.')
+            # print(f'Skipping: Artist "{artist.replace("%20", " ")}" and Track "{track.replace("%20", " ")}" not found.')
             continue
         # get relevant data 
         track_id = data['tracks']['items'][0]['id']
         track_name = data['tracks']['items'][0]['name']
         artist_id = data['tracks']['items'][0]['artists'][0]['id']
         artist_name = data['tracks']['items'][0]['artists'][0]['name']
-        print(f'Artist: {artist_name}, Track: {track_name}')
+        # rate limit just in case
+        time.sleep(0.5)
+        # print(f'Artist: {artist_name}, Track: {track_name}')
+
+
+def make_new_playlist(curr_show, client_id, client_secret, redirect_uri, scope):
+    scope = "playlist-modify-public"
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id,
+                                            client_secret=client_secret,
+                                            redirect_uri=redirect_uri,
+                                            scope=scope))
+    playlist_name = curr_show
+    user_id = sp.me()['id']
+    try:
+        sp.user_playlist_create(user_id, playlist_name)
+    except RuntimeError as err:
+        print(f"error trying to create playlist: {err}")
+    print(f'Playlist {playlist_name} created.')
+    return playlist_name
+
 
 
 def main():
     load_dotenv()
     curr_token = os.getenv('CURR_TOKEN')
+    client_id = os.getenv('CLIENT_ID')
+    client_secret = os.getenv('CLIENT_SECRET')
+    redirect_uri = os.getenv('REDIRECT_URI')
+    scope = 'playlist-modify-public'
 
     # for one entire show, get list of artist name and song name from db
     # Pick one show at random
@@ -67,10 +91,15 @@ def main():
 
     # Get a list of artists and songs for the show
     show_artist_song = process_current_show(curr_show)
+    print ('got show data from db')
     # print(show_artist_song)
 
     # For each song in the list, get the artist and track from the Spotify API
-    get_artist_track_spotify(show_artist_song, curr_token)
+    show_spotify_data = get_artist_track_spotify(show_artist_song, curr_token)
+    print('got Spotify data for artist and track')
+
+    # Create a new playlist with the songs from the show
+    make_new_playlist(curr_show, client_id, client_secret, redirect_uri, scope)
 
 
 if __name__ == '__main__':
