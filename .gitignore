@@ -173,3 +173,4 @@ config/private_data.py
 src/config/private_data.py
 src/data/*
 docs/privatenotes.md
+docs/privatenotes2.md
