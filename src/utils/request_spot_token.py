@@ -26,6 +26,7 @@ def req_token():
         raise Exception("could not authenticate client. Status code was : ", r.status_code)
     token = r.json()["access_token"]
     set_key(ENV_PATH, "CURR_TOKEN", token)
+    print("New token updated and saved to .env")
 
     return token
 
