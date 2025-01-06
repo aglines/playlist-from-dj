@@ -27,7 +27,7 @@
 # Logic, assumptions, volume
 - This will be a one-time process to correct archived data
 - Find a method that can automatically handle a large amount of the work, then plan to manually process a smaller amount.
-- 13,370 unique artist names
+- 13,266 unique artist names
 - Of these, 5098 appear one time, 1672 appear two times
 
 # Method

@@ -11,6 +11,10 @@ creates playlists in Spotify, based on music data from a radio station dj
 - start research questions, t.ex. most played band by this DJ? do they favor songs from any years, genres? live versions or studio recordings? etc
 
 # done
+- check for NULLS, missing data, etc
+- missing data mostly explained by context (see data cleaning.md)
+- Spotify handles malformed queries pretty well, for the purposes of this project
+- Decision: apart from missing data, it is not worth it to do much more cleaning, since the stakes are low here
 - use song title and artist to find the song on Spotify
 - refactor to include .env file
 - select data subset for one value of show from db
