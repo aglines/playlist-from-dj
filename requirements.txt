@@ -10,6 +10,7 @@ dnspython==2.7.0
 docopt==0.6.2
 fastavro==1.10.0
 fasteners==0.19
+fuzzywuzzy==0.18.0
 grpcio==1.65.5
 hdfs==2.7.3
 httplib2==0.22.0
@@ -30,6 +31,7 @@ pydot==1.4.2
 pymongo==4.10.1
 pyparsing==3.2.1
 python-dateutil==2.9.0.post0
+python-dotenv==1.0.1
 pytz==2024.2
 PyYAML==6.0.2
 redis==5.2.1
