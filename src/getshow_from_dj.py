@@ -50,4 +50,9 @@ def process_current_show(curr_show):
         finally:
             conn.close()
     return show_artist_song
+
+if __name__ == '__main__':
+    curr_show = 37547
+    show_artist_song = process_current_show(curr_show)
+    print(show_artist_song)
     

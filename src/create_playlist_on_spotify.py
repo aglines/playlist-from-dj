@@ -8,6 +8,7 @@ from getdata_show import process_current_show
 import json
 
 def get_artist_track_spotify(show_artist_song, curr_token, curr_show):
+    '''Get the artist and track from Spotify API'''
     # Check if the JSON file for the current show already exists
     if os.path.exists(f'{curr_show}.json'):
         print(f"Data for {curr_show} already exists. Reading from file.")
