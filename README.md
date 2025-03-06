@@ -1,6 +1,20 @@
 # playlist-from-dj
 creates playlists in Spotify, based on music data from a radio station dj
 
+## To run
+- First, run create_archive_gethost.py one time, to get the host ID from the radio station API, given the known time slots when the DJ hosts a show. TODO: explain required env vars
+
+- Run create_archive_getsongs.py given the known host_id. Hardcoded host_id and airdate_after and airdate_before datetimes, in order to retrieve all historical song data and cache locally as json.  Retrieved in chunks based on airdate.  Historical data is limited, so the oldest dates drop off, therefore I wanted to save the raw API response ASAP and process it later.
+
+- To do further processing, write the cached json to a local db by running create_archive_writejson_todb.py.  This stores the raw API response in postgres.
+
+- TODO: modify getshow_from_dj.py, so that user can enter a date at cl, and a playlist will be created from that date. 
+    - Build a lookup table to make this quicker: show_date (done)
+    
+
+
+
+
 # to do / planned structure
 
 ## Roadblock: API rate limits 
