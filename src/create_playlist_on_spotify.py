@@ -4,7 +4,7 @@ from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 from dotenv import load_dotenv
 import os
 import time
-from getdata_show import process_current_show
+from get_songs_fromshow import process_current_show
 import json
 
 def get_artist_track_spotify(show_artist_song, curr_token, curr_show):

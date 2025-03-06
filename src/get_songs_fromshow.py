@@ -35,7 +35,6 @@ def get_artist_song(show, table_name, conn):
     return rows
 
 def process_current_show(curr_show):
-
     load_dotenv()
     db_params = {
         'dbname': os.getenv('DBNAME'), 'user': os.getenv('DBUSER'),

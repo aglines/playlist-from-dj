@@ -10,7 +10,11 @@ creates playlists in Spotify, based on music data from a radio station dj
 
 - TODO: modify getshow_from_dj.py, so that user can enter a date at cl, and a playlist will be created from that date. 
     - Build a lookup table to make this quicker: show_date (done)
-    
+
+- Run main.py with an ISO formatted date (2024-12-20)
+    - this will check 
+
+- Run utils/request_spot_token.py to refresh the auth token
 
 
 

@@ -2,7 +2,7 @@ import requests, os, json, time
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 from dotenv import load_dotenv
-from getdata_show import process_current_show
+from get_songs_fromshow import process_current_show
 
 def get_artist_track_spotify(show_artist_song, curr_token, curr_show):
     '''Get the artist and track from Spotify API'''
