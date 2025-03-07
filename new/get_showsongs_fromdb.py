@@ -2,6 +2,7 @@ import psycopg2
 from psycopg2 import sql
 from dotenv import load_dotenv
 import os, sys
+from contextlib import contextmanager
 
 def load_db_params():
     load_dotenv()
@@ -10,15 +11,20 @@ def load_db_params():
         'password': os.getenv('PASSWORD'), 'host': os.getenv('HOST'), 'port': os.getenv('PORT')
     }
 
-def connect_to_db(db_params):
+@contextmanager
+def get_db_connection():
+    db_params = load_db_params()
+    conn = None
     try:
         conn = psycopg2.connect(**db_params)
-        return conn
-    except psycopg2.Error as e: 
+        yield conn
+    except psycopg2.Error as e:
         print(f'Error: could not connect to the database: {e}')
     except Exception as e:
         print(f'An unexpected error occurred: {e}')
-
+    finally:
+        if conn:
+            conn.close()
 
 def get_artist_song(show, table_name, conn):
     try:
@@ -39,16 +45,9 @@ def get_artist_song(show, table_name, conn):
     return rows
 
 def process_current_show(curr_show):
-    db_params = load_db_params()
     table_name = os.getenv('TABLENAME')
-
-    conn = connect_to_db(db_params)
-    if conn:
-        try:
-            show_artist_song = get_artist_song(curr_show, table_name, conn)
-        finally:
-            conn.close()
-    return show_artist_song
+    with get_db_connection() as conn:
+        return get_artist_song(curr_show, table_name, conn)
 
 def get_show_number(show_date, table_name, conn):
     try:
@@ -70,17 +69,12 @@ def get_show_number(show_date, table_name, conn):
     return show_id
 
 def pick_show_date(show_date):
-    db_params = load_db_params()
     table_name = 'show_date'
-    conn = connect_to_db(db_params)
-    if conn:
-        try:
-            show_number = get_show_number(show_date, table_name, conn)
-            if show_number is None:
-                print(f"No show found for {show_date}")
-        finally:
-            conn.close()
-    return show_number
+    with get_db_connection() as conn:
+        show_number = get_show_number(show_date, table_name, conn)
+        if show_number is None:
+            print(f"No show found for {show_date}")
+        return show_number
 
 if __name__ == '__main__':
     # User supplies a date at the command line in ISO format
@@ -89,5 +83,7 @@ if __name__ == '__main__':
     show_number = pick_show_date(show_date)
     # Get the artist and song for the show, from file get_songs_fromshow.py
     show_artist_song = process_current_show(show_number)
+
     print(show_artist_song)
+
 

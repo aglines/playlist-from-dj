@@ -1,19 +1,22 @@
-import requests
+import requests, os, json, time
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 from dotenv import load_dotenv
-import os
-import time
-# from getdata_show import process_current_show
-import json
+from get_showsongs_fromdb import pick_show_date, process_current_show
+import sys
 
-def get_artist_track_spotify(show_artist_song, curr_token):
+def get_artist_track_spotify(show_artist_song, curr_token, curr_show):
+    '''Get the artist and track from Spotify API'''
+
     endpoint = 'https://api.spotify.com/v1/search'
+
     # replace spaces with the encoded version
     show_artist_song = [[i.replace(' ', '%20') for i in x]
                         for x in show_artist_song]
+
     results = []
 
+    # Get track ID and artist ID for each song in the list
     for artist, track in show_artist_song:
         query = f'{endpoint}'
         query += f'?q=track%3A{track}%20artist%3A{artist}&type=track&limit=1'
@@ -34,50 +37,37 @@ def get_artist_track_spotify(show_artist_song, curr_token):
         track_name = data['tracks']['items'][0]['name']
         artist_id = data['tracks']['items'][0]['artists'][0]['id']
         artist_name = data['tracks']['items'][0]['artists'][0]['name']
-        duration = data['tracks']['items'][0]['duration_ms']
-        explicit = data['tracks']['items'][0]['explicit']
-        track_popularity = data['tracks']['items'][0]['popularity']
-        available_markets = data['tracks']['items'][0]['available_markets']
-        album_id = data['tracks']['items'][0]['album']['id']
-        album_name = data['tracks']['items'][0]['album']['name']
-        album_release_date = data['tracks']['items'][0]['album']['release_date']
-        album_release_date_precision = data['tracks']['items'][0]['album']['release_date_precision']
-        album_total_tracks = data['tracks']['items'][0]['album']['total_tracks']
-
 
         results.append({
             'artist_name': artist_name,
             'artist_id': artist_id,
             'track_name': track_name,
-            'track_id': track_id,
-            'duration': duration,
-            'explicit': explicit,
-            'track_popularity': track_popularity,
-            'available_markets': available_markets,
-            'album_id': album_id,
-            'album_name': album_name,
-            'album_release_date': album_release_date,
-            'album_release_date_precision': album_release_date_precision,
-            'album_total_tracks': album_total_tracks
+            'track_id': track_id
         })
+
+        # rate limit just in case
+        time.sleep(2)
+    print(f"Results: {results}")
+    # Save results to a JSON file
+    with open(f'{curr_show}.json', 'w') as f:
+        json.dump(results, f, indent=4)
     return results
 
-
-def main():
+if __name__ == '__main__':
     load_dotenv()
     curr_token = os.getenv('CURR_TOKEN')
     client_id = os.getenv('CLIENT_ID')
     client_secret = os.getenv('CLIENT_SECRET')
     redirect_uri = os.getenv('REDIRECT_URI')
+    scope = 'playlist-modify-public'
 
-    # Get a list of artists and songs for the show
-    show_artist_song = [('Pixies', 'Dead'), ("The B-52's", 'Devil in My Car'), ('The Animals', 'House of the Rising Sun'), ('The Clash', 'Straight to Hell')]
-    print(show_artist_song)
+    # User supplies a date at the command line in ISO format
+    show_date = sys.argv[1]
+    # From that date, get the show number
+    show_number = pick_show_date(show_date)
+    # Get the artist and song for the show, from file get_songs_fromshow.py
+    show_artist_song = process_current_show(show_number)
 
     # For each song in the list, get the artist and track from the Spotify API
-    show_spotify_data = get_artist_track_spotify(show_artist_song, curr_token)
-    print(show_spotify_data)
+    show_spotify_data = get_artist_track_spotify(show_artist_song, curr_token, show_number)
 
-
-if __name__ == '__main__':
-    main()

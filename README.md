@@ -11,13 +11,17 @@ This code gets song play data from a particular radio station DJ, then creates a
 
 ### Create a playlist in Spotify based on a given date
 
-- TODO: modify getshow_from_dj.py, so that user can enter a date at cl, and a playlist will be created from that date. 
-    - Build a lookup table to make this quicker: show_date (done)
-
-- Run main.py with an ISO formatted date (2024-12-20)
-    - this will check 
-
 - Run utils/request_spot_token.py to refresh the auth token
+
+- Run get_spotify_ids.py with an ISO formatted date (2024-12-20) to get the list of songs and artists for a particular day's show.  This will cache Spotify IDs to json. This potentially sidesteps rate limit difficulties in using Spotify's API.  (The future intent is to annotate the archive db to avoid repeat lookups.)
+
+
+
+
+
+
+
+
 
 
 
