@@ -29,6 +29,51 @@ def connect_to_db(dbname, user, password, host, port):
     except Exception as e:
         print(f'An unexpected error occurred: {e}')
 
+def create_table(conn, table_name):
+    try:
+        with conn.cursor() as cursor:
+            create_table_query = sql.SQL(
+                """
+                CREATE TABLE IF NOT EXISTS {table} (
+                    id SERIAL PRIMARY KEY,
+            uri text COLLATE pg_catalog."default",
+            airdate timestamp without time zone,
+            show integer,
+            show_uri text COLLATE pg_catalog."default",
+            image_uri text COLLATE pg_catalog."default",
+            thumbnail_uri text COLLATE pg_catalog."default",
+            song text COLLATE pg_catalog."default",
+            track_id text COLLATE pg_catalog."default",
+            recording_id text COLLATE pg_catalog."default",
+            artist text COLLATE pg_catalog."default",
+            artist_ids text COLLATE pg_catalog."default",
+            album text COLLATE pg_catalog."default",
+            release_id text COLLATE pg_catalog."default",
+            release_group_id text COLLATE pg_catalog."default",
+            labels text COLLATE pg_catalog."default",
+            label_ids text COLLATE pg_catalog."default",
+            release_date date,
+            rotation_status text COLLATE pg_catalog."default",
+            is_local boolean,
+            is_request boolean,
+            is_live boolean,
+            comment text COLLATE pg_catalog."default",
+            play_type text COLLATE pg_catalog."default",
+            is_already_in_spotify_tracks boolean DEFAULT false
+                )
+                """
+            ).format(table=sql.Identifier(table_name))
+            cursor.execute(create_table_query)
+            conn.commit()
+            print(f"Table {table_name} created successfully.")
+    except psycopg2.Error as e:
+        print(f"Error: Could not create table {table_name}. {e}")
+        conn.rollback()
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        conn.rollback()
+
+
 def insert_data(conn, data, table_name):
     try:
         with conn.cursor() as cursor:
@@ -59,16 +104,20 @@ def insert_data(conn, data, table_name):
         conn.rollback()
 
 def main():
-    load_env.load()
+    load_dotenv()
 
     db_params = {
         'dbname': os.getenv('DBNAME'), 'user': os.getenv('DBUSER'),
         'password': os.getenv('PASSWORD'), 'host': os.getenv('HOST'), 'port': os.getenv('PORT')
     }
-    table_name = os.getenv('TABLENAME')
+    # table_name = os.getenv('TABLENAME')
+    table_name = 'test_archive'
+    local_data_path = os.getenv('LOCAL_DATA_PATH')
 
     conn = connect_to_db(**db_params)
     
+    create_table(conn, table_name)
+
     for file_name in os.listdir(local_data_path):
         if file_name.endswith('.json'):
             file_path = os.path.join(local_data_path, file_name)
@@ -81,7 +130,6 @@ def main():
             insert_data(conn, data, table_name)
     
     conn.close()
-
 
 if __name__ == '__main__':
     main()

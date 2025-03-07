@@ -1,12 +1,13 @@
 import requests
 import json
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv, set_key
 
 load_dotenv()
-hosts = os.getenv('API_SOURCE_URL_HOSTS')
-timeslots = os.getenv('API_SOURCE_URL_TIMESLOTS')
-# from config.private_data import API_SOURCE_URL_HOSTS, API_SOURCE_URL_TIMESLOTS
+ENV_PATH = os.getenv("ENV_PATH")
+
+hosts = 'https://api.kexp.org/v2/hosts/'
+timeslots = 'https://api.kexp.org/v2/timeslots/'
 
 # Goal:  Find the specific DJ ID from the API data
 # This code will be only run once, so no need to make it a function
@@ -15,7 +16,7 @@ timeslots = os.getenv('API_SOURCE_URL_TIMESLOTS')
 # First, look at the list of hostIDs and names
     
 response = requests.get(hosts)
-response=response.json()
+response = response.json()
 
 for i in response['results']:
     print(i['name'], i['id'])
@@ -26,7 +27,7 @@ for i in response['results']:
 # so maybe the timeslots API has the info we need
 
 response = requests.get(timeslots)
-response=response.json()
+response = response.json()
 
 for i in response['results']:
     print(i['program_name'], i['host_names'], i['hosts'])
@@ -34,3 +35,4 @@ for i in response['results']:
 # Got it. The DJ's name is in the timeslots API response
 # The hostID for this DJ is 26
 
+set_key(ENV_PATH, "DJ_ID", "26")

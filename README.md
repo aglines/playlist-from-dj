@@ -1,12 +1,15 @@
 # playlist-from-dj
-creates playlists in Spotify, based on music data from a radio station dj
+This code gets song play data from a particular radio station DJ, then creates a playlist in Spotify based on the songs they played
 
 ## To run
-- First, run create_archive_gethost.py one time, to get the host ID from the radio station API, given the known time slots when the DJ hosts a show. TODO: explain required env vars
+### Create the archive of song play data
+- Run utils/create_archive_gethost.py one time, to get the host ID from the radio station API, given the known time slots when the DJ hosts a show. 
 
-- Run create_archive_getsongs.py given the known host_id. Hardcoded host_id and airdate_after and airdate_before datetimes, in order to retrieve all historical song data and cache locally as json.  Retrieved in chunks based on airdate.  Historical data is limited, so the oldest dates drop off, therefore I wanted to save the raw API response ASAP and process it later.
+- Run create_archive_getsongs.py. This Beam pipeline grabs historical song data via the radio station API, from the current date back to an arbitrarily set date (2000-01-01, since the station archive only goes back 25 years.)  Because the oldest dates drop off, I chose to save the raw API response ASAP. This data gets cached locally as json.
 
-- To do further processing, write the cached json to a local db by running create_archive_writejson_todb.py.  This stores the raw API response in postgres.
+- Run create_archive_writejson_todb.py.  This code reads the cached json and writes it to a Postgres db.
+
+### Create a playlist in Spotify based on a given date
 
 - TODO: modify getshow_from_dj.py, so that user can enter a date at cl, and a playlist will be created from that date. 
     - Build a lookup table to make this quicker: show_date (done)

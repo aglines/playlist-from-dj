@@ -12,7 +12,6 @@ CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 REDIRECT_URI = os.getenv("REDIRECT_URI")
 ENV_PATH = os.getenv("ENV_PATH")
 
-
 def req_token():
     """gets a spotify web API token"""
     endpoint = 'https://accounts.spotify.com/api/token'
