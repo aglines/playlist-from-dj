@@ -15,6 +15,7 @@ This code gets song play data from a particular radio station DJ, then creates a
 
 - Run get_spotify_ids.py with an ISO formatted date (2024-12-20) to get the list of songs and artists for a particular day's show.  This will cache Spotify IDs to json. This potentially sidesteps rate limit difficulties in using Spotify's API.  (The future intent is to annotate the archive db to avoid repeat lookups.)
 
+- Run create_playlist.py
 
 
 
