@@ -55,14 +55,16 @@ if __name__ == '__main__':
     if show_number is None:
         print("Error: No show found for the given date")
         sys.exit(1)
-
+    
     # Get the artist and song for the show, from file get_songs_fromshow.py
     show_artist_song = process_current_show(show_number)
 
     # Playlist API requires a track ID, not just artist and track name
     show_spotify_data = get_artist_track_spotify(show_artist_song, curr_token, show_number)
 
-    playlist_name = make_new_playlist(sp, show_number)
+    # TODO: handle the stringification of the show number earlier in the process
+
+    playlist_name = make_new_playlist(sp, f'{show_number}')
     if playlist_name:
         playlist_id = get_playlist_id(sp, playlist_name)
 

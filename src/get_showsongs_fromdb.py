@@ -54,6 +54,9 @@ def get_show_number(show_date, table_name, conn):
         with conn.cursor() as cursor:
             cursor.execute(
                 sql.SQL(
+
+                    # TODO: fix this SQL to not use the lookup table
+
                     'SELECT show_id FROM {table} WHERE date = {show_date}'
                 ).format(
                     table=sql.Identifier(table_name),
@@ -69,7 +72,7 @@ def get_show_number(show_date, table_name, conn):
     return show_id
 
 def pick_show_date(show_date):
-    table_name = 'show_date'
+    table_name = os.getenv('TABLENAME')
     with get_db_connection() as conn:
         show_number = get_show_number(show_date, table_name, conn)
         return show_number
