@@ -72,18 +72,4 @@ def pick_show_date(show_date):
     table_name = 'show_date'
     with get_db_connection() as conn:
         show_number = get_show_number(show_date, table_name, conn)
-        if show_number is None:
-            print(f"No show found for {show_date}")
         return show_number
-
-if __name__ == '__main__':
-    # User supplies a date at the command line in ISO format
-    show_date = sys.argv[1]
-    # From that date, get the show number
-    show_number = pick_show_date(show_date)
-    # Get the artist and song for the show, from file get_songs_fromshow.py
-    show_artist_song = process_current_show(show_number)
-
-    print(show_artist_song)
-
-
