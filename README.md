@@ -10,12 +10,15 @@ This code gets a list of songs played on a user-provided date from a particular 
 
 - Run create_archive_writejson_todb.py.  This code reads the cached json and writes it to a Postgres db.
 
+![DB Image](docs/db2.png)
+
+
 ### Create a playlist in Spotify based on a given date
 
 - Run utils/request_spot_token.py to refresh the auth token
 
-- Run create_playlist.py with an ISO formatted date ('2024-12-20') to get the list of songs and artists for a particular day's show.  
-    - This will cache Spotify IDs to json, which potentially sidesteps rate limit difficulties in using Spotify's API.  (The future intent is to annotate the archive db to avoid repeat lookups.)
+- Run create_playlist.py with an ISO formatted date ('2024-12-20') to get the list of songs and artists for a particular day's show. This will cache Spotify IDs to json, which potentially sidesteps rate limit difficulties in using Spotify's API.  (The future intent is to annotate the archive db to avoid repeat lookups.)
 
 - Enjoy the playlist!
 
+![Playlist Image](docs/playlist.png)
