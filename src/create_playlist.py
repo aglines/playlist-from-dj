@@ -15,13 +15,13 @@ def get_spotify_client():
     scope = 'playlist-modify-public'
     return spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri, scope=scope))
 
-def make_new_playlist(sp, curr_show):
-    playlist_name = curr_show
+def make_new_playlist(sp, show_date):
+    playlist_name = show_date
     user_id = sp.me()['id']
     try:
         sp.user_playlist_create(user_id, playlist_name)
     except RuntimeError as err:
-        print(f"error trying to create playlist: {err}")
+        print(f"error trying to create playlist {playlist_name}: {err}")
     return playlist_name
 
 def get_playlist_id(sp, playlist_name):
@@ -60,16 +60,16 @@ if __name__ == '__main__':
     show_artist_song = process_current_show(show_number)
 
     # Playlist API requires a track ID, not just artist and track name
-    show_spotify_data = get_artist_track_spotify(show_artist_song, curr_token, show_number)
+    show_spotify_data = get_artist_track_spotify(show_artist_song, curr_token, show_date)
 
-    # TODO: handle the stringification of the show number earlier in the process
-
-    playlist_name = make_new_playlist(sp, f'{show_number}')
+    playlist_name = make_new_playlist(sp, show_date)
     if playlist_name:
         playlist_id = get_playlist_id(sp, playlist_name)
 
         # used cached JSON to avoid API calls
-        with open(f'{show_number}.json', 'r') as f:
+        data_path = os.getenv('LOCAL_DATA_PATH')
+        input_file = os.path.join(f'{data_path}/spotify', f'{show_date}.json')
+        with open(input_file, 'r') as f:
             tracklist = json.load(f)
         tracklist = [track['track_id'] for track in tracklist]
 
@@ -79,5 +79,3 @@ if __name__ == '__main__':
         sys.exit(1)
 
     print(f"Playlist {playlist_name} created successfully.") 
-
-

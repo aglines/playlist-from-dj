@@ -35,31 +35,33 @@ def create_table(conn, table_name):
             create_table_query = sql.SQL(
                 """
                 CREATE TABLE IF NOT EXISTS {table} (
-                    id SERIAL PRIMARY KEY,
-            uri text COLLATE pg_catalog."default",
-            airdate timestamp without time zone,
-            show integer,
-            show_uri text COLLATE pg_catalog."default",
-            image_uri text COLLATE pg_catalog."default",
-            thumbnail_uri text COLLATE pg_catalog."default",
-            song text COLLATE pg_catalog."default",
-            track_id text COLLATE pg_catalog."default",
-            recording_id text COLLATE pg_catalog."default",
-            artist text COLLATE pg_catalog."default",
-            artist_ids text COLLATE pg_catalog."default",
-            album text COLLATE pg_catalog."default",
-            release_id text COLLATE pg_catalog."default",
-            release_group_id text COLLATE pg_catalog."default",
-            labels text COLLATE pg_catalog."default",
-            label_ids text COLLATE pg_catalog."default",
-            release_date date,
-            rotation_status text COLLATE pg_catalog."default",
-            is_local boolean,
-            is_request boolean,
-            is_live boolean,
-            comment text COLLATE pg_catalog."default",
-            play_type text COLLATE pg_catalog."default",
-            is_already_in_spotify_tracks boolean DEFAULT false
+                id SERIAL PRIMARY KEY,
+                uri text COLLATE pg_catalog."default",
+                airdate timestamp without time zone,
+                show integer,
+                show_uri text COLLATE pg_catalog."default",
+                image_uri text COLLATE pg_catalog."default",
+                thumbnail_uri text COLLATE pg_catalog."default",
+                song text COLLATE pg_catalog."default",
+                track_id text COLLATE pg_catalog."default",
+                recording_id text COLLATE pg_catalog."default",
+                artist text COLLATE pg_catalog."default",
+                artist_ids text COLLATE pg_catalog."default",
+                album text COLLATE pg_catalog."default",
+                release_id text COLLATE pg_catalog."default",
+                release_group_id text COLLATE pg_catalog."default",
+                labels text COLLATE pg_catalog."default",
+                label_ids text COLLATE pg_catalog."default",
+                release_date date,
+                rotation_status text COLLATE pg_catalog."default",
+                is_local boolean,
+                is_request boolean,
+                is_live boolean,
+                location integer,
+                location_name text COLLATE pg_catalog."default",
+                comment text COLLATE pg_catalog."default",
+                play_type text COLLATE pg_catalog."default",
+                is_already_in_spotify_tracks boolean DEFAULT false
                 )
                 """
             ).format(table=sql.Identifier(table_name))
@@ -110,8 +112,7 @@ def main():
         'dbname': os.getenv('DBNAME'), 'user': os.getenv('DBUSER'),
         'password': os.getenv('PASSWORD'), 'host': os.getenv('HOST'), 'port': os.getenv('PORT')
     }
-    # table_name = os.getenv('TABLENAME')
-    table_name = 'test_archive'
+    table_name = os.getenv('TABLENAME')
     local_data_path = os.getenv('LOCAL_DATA_PATH')
 
     conn = connect_to_db(**db_params)

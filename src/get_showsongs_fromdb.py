@@ -55,9 +55,7 @@ def get_show_number(show_date, table_name, conn):
             cursor.execute(
                 sql.SQL(
 
-                    # TODO: fix this SQL to not use the lookup table
-
-                    'SELECT show_id FROM {table} WHERE date = {show_date}'
+                    'SELECT show FROM {table} WHERE DATE(airdate) = {show_date}'
                 ).format(
                     table=sql.Identifier(table_name),
                     show_date=sql.Literal(show_date)

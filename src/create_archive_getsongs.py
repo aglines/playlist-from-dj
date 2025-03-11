@@ -68,8 +68,9 @@ class RequestData(beam.DoFn):
             current_date = airdate_after  # Move to the previous month
 
 def writedata_tojson(data):
+    data_path = os.getenv('LOCAL_DATA_PATH')
     rn = datetime.now().strftime('%H%M%S')
-    output_file = os.path.join('data', f'output_{rn}.json')
+    output_file = os.path.join(f'{data_path}/kexp', f'output_{rn}.json')
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     with open(output_file, 'w') as f:
         json.dump(data, f)

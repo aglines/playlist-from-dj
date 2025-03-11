@@ -5,13 +5,13 @@ from dotenv import load_dotenv
 from get_showsongs_fromdb import pick_show_date, process_current_show
 import sys
 
-def get_artist_track_spotify(show_artist_song, curr_token, curr_show):
+def get_artist_track_spotify(show_artist_song, curr_token, show_date):
 
     endpoint = 'https://api.spotify.com/v1/search'
 
     # API requires URL encoded strings
     show_artist_song = [[i.replace(' ', '%20') for i in x]
-                        for x in show_artist_song]
+        for x in show_artist_song]
     results = []
 
     # Playlist API requires a track ID, not just artist and track name
@@ -43,7 +43,9 @@ def get_artist_track_spotify(show_artist_song, curr_token, curr_show):
         })
 
     # Cache results locally with intent to annotate the archive db to avoid future API calls
-    with open(f'{curr_show}.json', 'w') as f:
+    data_path = os.getenv('LOCAL_DATA_PATH')
+    output_file = os.path.join(f'{data_path}/spotify', f'{show_date}.json')
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    with open(output_file, 'w') as f:
         json.dump(results, f, indent=4)
     return results
-
